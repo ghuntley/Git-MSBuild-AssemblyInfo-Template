@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{83544648-2813-4240-A6C5-32B07D3DC6E2}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ConsoleApplication1</RootNamespace>
+    <AssemblyName>ConsoleApplication1</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\GlobalAssemblyInfo.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\VersionAssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+
+  <!-- C&P - Start -->
+
+
+  <PropertyGroup>
+    <MSBuildCommunityTasksPath>$(SolutionDir)\.build</MSBuildCommunityTasksPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets" />
+  <Import Project="$(MSBuildProjectDirectory)\..\packages\SemVerHarvester.0.3.0\msbuild\SemVerHarvester.Targets" />
+  <Target Name="BeforeBuild">
+    <SemVerGitHarvester GitPath="c:\Program Files (x86)\git\bin\git.exe">
+      <Output TaskParameter="MajorVersion" PropertyName="MajorVersion" />
+      <Output TaskParameter="MinorVersion" PropertyName="MinorVersion" />
+      <Output TaskParameter="PatchVersion" PropertyName="PatchVersion" />
+      <Output TaskParameter="RevisionVersion" PropertyName="RevisionVersion" />
+      <Output TaskParameter="ModifiedString" PropertyName="ModifiedString" />
+    </SemVerGitHarvester>
+    <Time Format="o">
+      <Output TaskParameter="FormattedTime" PropertyName="BuildDate" />
+    </Time>
+    <Computer>
+      <Output TaskParameter="Name" PropertyName="BuildMachineName" />
+    </Computer>
+    <AssemblyInfo OutputFile="Properties\VersionAssemblyInfo.cs" CodeLanguage="CS" AssemblyVersion="$(MajorVersion).$(MinorVersion).$(PatchVersion).$(RevisionVersion)" AssemblyFileVersion="$(MajorVersion).$(MinorVersion).$(PatchVersion).$(RevisionVersion)" AssemblyInformationalVersion="SemVer $(MajorVersion).$(MinorVersion).$(PatchVersion).$(RevisionVersion)$(ModifiedString), built $(BuildDate) on: $(BuildMachineName)" />
+  </Target>
+
+  <!-- C&P - End -->
+
+</Project>
