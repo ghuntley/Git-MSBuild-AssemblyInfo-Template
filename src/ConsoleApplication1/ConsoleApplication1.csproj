@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -11,6 +11,8 @@
     <AssemblyName>ConsoleApplication1</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -57,32 +59,40 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-
   <!-- C&P - Start -->
-
-
   <PropertyGroup>
     <MSBuildCommunityTasksPath>$(SolutionDir)\.build</MSBuildCommunityTasksPath>
   </PropertyGroup>
   <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets" />
   <Import Project="$(MSBuildProjectDirectory)\..\packages\SemVerHarvester.0.3.0\msbuild\SemVerHarvester.Targets" />
   <Target Name="BeforeBuild">
+    <GitVersion>
+      <Output TaskParameter="CommitHash" PropertyName="GitCommitHash" />
+    </GitVersion>
     <SemVerGitHarvester GitPath="c:\Program Files (x86)\git\bin\git.exe">
       <Output TaskParameter="MajorVersion" PropertyName="MajorVersion" />
       <Output TaskParameter="MinorVersion" PropertyName="MinorVersion" />
       <Output TaskParameter="PatchVersion" PropertyName="PatchVersion" />
-      <Output TaskParameter="RevisionVersion" PropertyName="RevisionVersion" />
       <Output TaskParameter="ModifiedString" PropertyName="ModifiedString" />
+      <Output TaskParameter="RevisionVersion" PropertyName="RevisionVersion" />
+      <Output TaskParameter="CommitId" PropertyName="CommitId" />
     </SemVerGitHarvester>
+    <User>
+      <Output TaskParameter="UserName" PropertyName="BuildUserName" />
+    </User>
     <Time Format="o">
       <Output TaskParameter="FormattedTime" PropertyName="BuildDate" />
     </Time>
     <Computer>
       <Output TaskParameter="Name" PropertyName="BuildMachineName" />
     </Computer>
-    <AssemblyInfo OutputFile="Properties\VersionAssemblyInfo.cs" CodeLanguage="CS" AssemblyVersion="$(MajorVersion).$(MinorVersion).$(PatchVersion).$(RevisionVersion)" AssemblyFileVersion="$(MajorVersion).$(MinorVersion).$(PatchVersion).$(RevisionVersion)" AssemblyInformationalVersion="SemVer $(MajorVersion).$(MinorVersion).$(PatchVersion).$(RevisionVersion)$(ModifiedString), built $(BuildDate) on: $(BuildMachineName)" />
+    <AssemblyInfo
+    	OutputFile="Properties\VersionAssemblyInfo.cs"
+    	CodeLanguage="CS"
+    	AssemblyVersion="$(MajorVersion).$(MinorVersion).$(PatchVersion).$(RevisionVersion)"
+    	AssemblyFileVersion="$(MajorVersion).$(MinorVersion).$(PatchVersion).$(RevisionVersion)"
+    	AssemblyInformationalVersion="SemVer $(MajorVersion).$(MinorVersion).$(PatchVersion).$(RevisionVersion) $(CommitId)$(ModifiedString), built $(BuildDate) by $(BuildUserName)@$(BuildMachineName)" />
   </Target>
-
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- C&P - End -->
-
 </Project>
